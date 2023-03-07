@@ -5,6 +5,8 @@ using UnityEngine;
 public class EagleMovement : MonoBehaviour
 {
     public float speed = 10f;
+    public float rotation_speed = 30f;
+
     GameObject player;
 
     // Start is called before the first frame update
@@ -16,14 +18,19 @@ public class EagleMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        var targetPos = player.transform.position - transform.position;
+        var rotation = Quaternion.LookRotation(targetPos);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 2);
+        //transform.Rotate(rotation_speed * Time.deltaTime * Vector3.forward);
         transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (other.gameObject.tag == "Player")
         {
             Destroy(this.gameObject);
         }
     }
+
 }
